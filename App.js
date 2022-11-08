@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { View, Button } from 'react-native';
 import styles from './styles';
 import Joke from './components/Jokes';
 import Punchline from './components/Punchline';
@@ -9,10 +9,12 @@ import Another from './components/Another';
 export default function App() {
 
   //create state to hold jokes
-  const [jokeList, setJokeList] = useState([]);
+  const [jokeList, setJokeList] = useState();
 
   //state to hold last joke index
   const [currentJokeIndex, setCurrentJokeIndex] = useState(0);
+
+  const [showJoke, setShowJoke] = useState();
 
   //create function to get another
   const getNextJoke = () => {
@@ -37,11 +39,17 @@ export default function App() {
         jokeList
           ? <>
             <Joke joke={jokeList[currentJokeIndex].setup} />
-            <Punchline punchline={jokeList[currentJokeIndex].punchline} />
           </>
           : null
       }
-      <Another getNextJoke={getNextJoke}/>
+      {
+        jokeList && showJoke
+          ? <>
+            <Punchline punchline={jokeList[currentJokeIndex].punchline} />
+          </>
+          : <Button title={'Show punchline'} onPress={()=>setShowJoke(true)}/>
+      }
+      <Another getNextJoke={getNextJoke} setShowJoke={setShowJoke}/>
       <StatusBar style="auto" />
     </View>
   );
